@@ -16,7 +16,7 @@ router = APIRouter(
 )
 logger = logging.getLogger('baseproject')
 
-@router.get('/', response_model=List[ProductRead])
+@router.get('', response_model=List[ProductRead])
 @version(1, 0)
 async def get_all_products(
     *,
@@ -53,7 +53,7 @@ async def get_one_product(
     return product
 
 
-@router.post('/', response_model=ProductRead, status_code=201)
+@router.post('', response_model=ProductRead, status_code=201)
 @version(1, 0)
 async def create_product(
     *,
