@@ -1,5 +1,4 @@
 build: stop
-	pip freeze > requirements.txt
 	docker-compose build --progress=tty
 	docker image prune --force
 
@@ -10,22 +9,21 @@ start:
 	docker-compose up -d
 
 run: start
-	docker exec baseproject alembic -c app/alembic.ini upgrade head
+	docker exec baseproject_api alembic -c app/alembic.ini upgrade head
 
 migrate-test: start
-	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject alembic -c app/alembic.ini upgrade head
+	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject_api alembic -c app/alembic.ini upgrade head
 
 test: migrate-test
-	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject pytest tests --asyncio-mode=strict
+	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject_api pytest tests --asyncio-mode=strict
 
 coverage: migrate-test
-	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject coverage run --branch --concurrency=thread,greenlet --source=app -m pytest --asyncio-mode=strict
-	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject coverage report -m
+	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject_api coverage run --branch --concurrency=thread,greenlet --source=app -m pytest --asyncio-mode=strict
+	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject_api coverage report -m
 
 report: coverage
-	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject coverage html
+	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject_api coverage html
 	open htmlcov/index.html
 
 lint: start
-	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject pylint app
-	
+	docker exec -e ENVIRONMENT=test -e DATABASE_URL="sqlite+aiosqlite:///test_db.sqlite3" baseproject_api pylint app

@@ -31,7 +31,7 @@ services:
       - backend_network
   
   baseproject:
-    container_name: baseproject
+    container_name: baseproject_api
     build:
       context: .
       dockerfile: Dockerfile
