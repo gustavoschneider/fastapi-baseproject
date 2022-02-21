@@ -34,7 +34,7 @@ async def get_all_products(
     else:
         query = select(Product)
 
-    result = await session.execute(query.offset(offset).limit(limit))
+    result = await session.execute(query.offset(offset).limit(limit).order_by(Product.id))
     
     products = result.scalars().all()
     return products
